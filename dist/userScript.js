@@ -1,30 +1,3 @@
-(async function() {
-  console.log('Waiting for player library...');
-  while (typeof client?.com?.downdogapp?.client === 'undefined') {
-    await new Promise(res => setTimeout(res, 500));
-  }
-  console.log('Player library loaded.');
-
-  console.log('Re-initializing playback...');
-  client.com.downdogapp.client.initializeSequencePlayback(null, false);
-
-  console.log('Waiting for video element...');
-  const video = await new Promise(res => {
-    const check = () => {
-      const v = document.querySelector('video');
-      if (v && v.readyState >= 4) {
-        console.log('Video ready!');
-        res(v);
-      } else {
-        setTimeout(check, 500);
-      }
-    };
-    check();
-  });
-
-  video.play().catch(e => console.error('Play error:', e));
-})();
-
 (function () {
   // CSS style for highlighting focused element with enhanced visuals
   const style = document.createElement('style');
