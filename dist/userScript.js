@@ -1,10 +1,10 @@
 src="https://cdn.jsdelivr.net/npm/hls.js@latest"
-src="https://cdn.jsdelivr.net/npm/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.js
-src="https://unpkg.com/video.js/dist/video.js
-src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js
-src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js
-src="https://cdn.jsdelivr.net/npm/mediaelement@4.2.16/build/mediaelement-and-player.min.js
-src="https://cdn.plyr.io/3.6.8/plyr.js
+src="https://cdn.jsdelivr.net/npm/videojs-contrib-hls@5.15.0/dist/videojs-contrib-hls.js"
+src="https://unpkg.com/video.js/dist/video.js"
+src="https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js"
+src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"
+src="https://cdn.jsdelivr.net/npm/mediaelement@4.2.16/build/mediaelement-and-player.min.js"
+src="https://cdn.plyr.io/3.6.8/plyr.js"
 
 // Create the debug overlay
 const debugWindow = document.createElement('div');
