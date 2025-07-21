@@ -1,3 +1,33 @@
+(async function() {
+  // Wait for player script/library to load
+  while (typeof client?.com?.downdogapp?.client === 'undefined') {
+    await new Promise(res => setTimeout(res, 500));
+  }
+  console.log('Player lib ready.');
+
+  // Wait for the video element
+  const video = await new Promise(res => {
+    const check = () => {
+      const v = document.querySelector('video');
+      if (v) res(v);
+      else setTimeout(check, 500);
+    };
+    check();
+  });
+  console.log('Video element found');
+
+  video.addEventListener('canplay', () => {
+    console.log('Video can play — playing now.');
+    video.play();
+  });
+
+  // Re-trigger the initialization in case it hung
+  setTimeout(() => {
+    console.log('Re-initializing playback...');
+    client.com.downdogapp.client.initializeSequencePlayback(null, false);
+  }, 10000);
+})();
+
 (function () {
   // CSS style for highlighting focused element
   const style = document.createElement('style');
