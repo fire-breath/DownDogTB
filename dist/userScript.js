@@ -1,32 +1,4 @@
-window.addEventListener('load', function () {
-  const observer = new MutationObserver(() => {
-    const loginButton = Array.from(document.querySelectorAll('button'))
-      .find(btn => btn.textContent.trim() === 'LOG IN');
-
-    if (loginButton) {
-      loginButton.click();
-      observer.disconnect(); // stop observing once clicked
-    }
-  });
-
-  observer.observe(document.body, { childList: true, subtree: true });
-});
-
-
-
-  // Fix UI issues.
-  const ui = configRead('enableFixedUI');
-  if (ui) {
-    try {
-      window.tectonicConfig.featureSwitches.isLimitedMemory = false;
-      window.tectonicConfig.clientData.legacyApplicationQuality = 'full-animation';
-      window.tectonicConfig.featureSwitches.enableAnimations = true;
-      window.tectonicConfig.featureSwitches.enableOnScrollLinearAnimation = true;
-      window.tectonicConfig.featureSwitches.enableListAnimations = true;
-    } catch (e) { }
-  }
-
-  // We handle key events ourselves.
+ // We handle key events ourselves.
   window.__spatialNavigation__.keyMode = 'NONE';
 
   var ARROW_KEY_CODE = { 37: 'left', 38: 'up', 39: 'right', 40: 'down' };
