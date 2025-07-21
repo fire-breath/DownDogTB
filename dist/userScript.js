@@ -1,28 +1,23 @@
 (function() {
     // Function to initialize navigation
     function initializeNavigation() {
-        // Select initial buttons (SIGN UP and LOG IN)
-        const mainContainer = document.querySelector('div[style*="flex-direction: column; align-items: center; justify-content: center; height: 100vh"]');
-        const initialButtons = mainContainer && mainContainer.offsetParent !== null
-            ? Array.from(mainContainer.querySelectorAll('button[tabindex="0"][style*="font-family: \\"Montserrat\\", sans-serif; cursor: pointer; height: 50px;"]'))
-                .filter(el => !el.disabled && el.offsetParent !== null && (el.textContent.trim() === 'SIGN UP' || el.textContent.trim() === 'LOG IN'))
-            : [];
-
-        // Select login form elements (Email, Password, LOG IN button, Forgot Password?)
-        const loginContainer = Array.from(document.querySelectorAll('div[style*="flex-direction: column; justify-content: space-between; padding-top: 60px"]'))
-            .find(el => el.offsetParent !== null && getComputedStyle(el).display !== 'none');
-        const loginElements = loginContainer
-            ? Array.from(loginContainer.querySelectorAll('input[type="text"], input[type="password"], button[tabindex="0"]'))
-                .filter(el => !el.disabled && el.offsetParent !== null && el.style.display !== 'none' && (el.tagName === 'INPUT' || el.textContent.trim() === 'LOG IN' || el.textContent.trim() === 'Forgot Password?'))
-            : [];
-
-        // Use login elements if available, otherwise initial buttons
-        const focusableElements = loginElements.length > 0 ? loginElements : initialButtons;
+        // Select focusable elements: inputs and buttons with tabindex="0"
+        const focusableElements = Array.from(document.querySelectorAll('input[type="text"]:not([style*="display: none"]), input[type="password"]:not([style*="display: none"]), button[tabindex="0"]:not([style*="display: none"])'))
+            .filter(el => !el.disabled && el.offsetParent !== null)
+            .filter(el => {
+                // Exclude social login buttons (Apple, Google, Facebook) unless desired
+                const isSocialLogin = (
+                    el.tagName === 'IMG' && el.getAttribute('role') === 'button' ||
+                    el.closest('[id*="gsi_"]') || // Google Sign-In button
+                    el.src && el.src.includes('facebook_login') ||
+                    el.src && el.src.includes('apple_login')
+                );
+                return !isSocialLogin;
+            });
 
         if (focusableElements.length === 0) {
             console.log('No focusable elements found.');
-            console.log('Main container found:', !!mainContainer, mainContainer ? getComputedStyle(mainContainer).display : 'N/A');
-            console.log('Login container found:', !!loginContainer, loginContainer ? getComputedStyle(loginContainer).display : 'N/A');
+            console.log('Document body visibility:', getComputedStyle(document.body).display);
             return false;
         }
 
@@ -93,6 +88,15 @@
                         event.preventDefault();
                         currentElement.click();
                         console.log(`Button clicked: ${currentElement.textContent.trim()}`);
+                    } else if (currentElement.tagName === 'INPUT' && currentElement.form) {
+                        // Find the submit button in the same form
+                        const submitButton = Array.from(currentElement.form.querySelectorAll('button[tabindex="0"]'))
+                            .find(btn => btn.textContent.trim() === 'LOG IN' || btn.type === 'submit');
+                        if (submitButton) {
+                            event.preventDefault();
+                            submitButton.click();
+                            console.log('Form submitted via Enter on input');
+                        }
                     }
                     break;
 
@@ -110,8 +114,7 @@
     // Add focus styling with high specificity
     const style = document.createElement('style');
     style.textContent = `
-        button[tabindex="0"][style*="font-family: \\"Montserrat\\", sans-serif"]:focus,
-        input.no-outline-focus:focus {
+        input[type="text"]:focus, input[type="password"]:focus, button[tabindex="0"]:focus {
             outline: 3px solid #ffffff !important;
             outline-offset: 3px !important;
             background-color: rgba(255, 255, 255, 0.7) !important;
@@ -132,7 +135,7 @@
         observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
 
         // Fallback: retry after delays
-        const retries = [1000, 2000, 3000, 5000, 10000];
+        const retries = [1000, 2000, 3000, 5000, 10000, 15000];
         retries.forEach((delay, index) => {
             setTimeout(() => {
                 if (initializeNavigation()) {
@@ -143,11 +146,17 @@
         });
     }
 
-    // Monitor LOG IN button click to reinitialize navigation
+    // Reinitialize on click events for LOG IN or navigation
     document.addEventListener('click', (event) => {
         if (event.target.tagName === 'BUTTON' && event.target.textContent.trim() === 'LOG IN') {
             console.log('LOG IN button clicked, reinitializing navigation');
-            setTimeout(initializeNavigation, 100); // Short delay to allow DOM update
+            setTimeout(initializeNavigation, 100);
         }
     }, { capture: true });
+
+    // Reinitialize on page navigation (hash or URL changes)
+    window.addEventListener('popstate', () => {
+        console.log('Page navigation detected, reinitializing navigation');
+        setTimeout(initializeNavigation, 100);
+    });
 })();
