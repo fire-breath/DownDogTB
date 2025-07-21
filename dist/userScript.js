@@ -1,72 +1,51 @@
-(function () {
-    const video = document.querySelector('video');
-    if (!video) return;
+// Create the debug overlay
+const debugWindow = document.createElement('div');
+debugWindow.style.position = 'fixed';
+debugWindow.style.top = '0';
+debugWindow.style.left = '0';
+debugWindow.style.width = '100%';
+debugWindow.style.maxHeight = '50%';
+debugWindow.style.overflowY = 'auto';
+debugWindow.style.zIndex = '99999';
+debugWindow.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+debugWindow.style.color = '#0f0';
+debugWindow.style.font = '12px monospace';
+debugWindow.style.padding = '5px';
+debugWindow.style.pointerEvents = 'none'; // Let clicks pass through
+document.body.appendChild(debugWindow);
 
-    // Floating log overlay
-    const logWindow = document.createElement('div');
-    Object.assign(logWindow.style, {
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        right: '0',
-        maxHeight: '40%',
-        overflowY: 'auto',
-        zIndex: 9999,
-        background: 'rgba(0,0,0,0.8)',
-        color: '#0f0',
-        fontFamily: 'monospace',
-        fontSize: '12px',
-        padding: '8px',
-        whiteSpace: 'pre-wrap',
-        pointerEvents: 'none'
-    });
-    document.body.appendChild(logWindow);
+// Keep original methods
+const originalLog = console.log;
+const originalWarn = console.warn;
+const originalError = console.error;
 
-    function log(...args) {
-        const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' ');
-        console.log('[LOG]', msg);
-        logWindow.textContent += msg + '\n';
-        logWindow.scrollTop = logWindow.scrollHeight;
-    }
+function printToOverlay(type, args) {
+  const msg = document.createElement('div');
+  msg.textContent = `[${type}] ${Array.from(args).join(' ')}`;
+  if (type === 'error') msg.style.color = '#f66';
+  if (type === 'warn') msg.style.color = '#ff0';
+  debugWindow.appendChild(msg);
+  debugWindow.scrollTop = debugWindow.scrollHeight; // Auto-scroll
+}
 
-    // Attach common video events
-    [
-        'loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough',
-        'durationchange', 'play', 'pause', 'seeking', 'seeked', 'ended',
-        'error', 'stalled', 'waiting', 'suspend', 'abort'
-    ].forEach(evt => {
-        video.addEventListener(evt, () => log(`[${evt}]`));
-    });
+// Override console methods
+console.log = function(...args) {
+  originalLog.apply(console, args);
+  printToOverlay('log', args);
+};
+console.warn = function(...args) {
+  originalWarn.apply(console, args);
+  printToOverlay('warn', args);
+};
+console.error = function(...args) {
+  originalError.apply(console, args);
+  printToOverlay('error', args);
+};
 
-    // Detailed error logging
-    video.onerror = function () {
-        const e = video.error;
-        let message = 'Unknown error';
-        if (e) {
-            switch (e.code) {
-                case MediaError.MEDIA_ERR_ABORTED:
-                    message = 'Media aborted.';
-                    break;
-                case MediaError.MEDIA_ERR_NETWORK:
-                    message = 'Network error.';
-                    break;
-                case MediaError.MEDIA_ERR_DECODE:
-                    message = 'Decode error.';
-                    break;
-                case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-                    message = 'Media source not supported.';
-                    break;
-                default:
-                    message = 'Other video error.';
-            }
-        }
-        log(`[ERROR] ${message}`);
-        log('video.src:', video.src);
-        log('video.currentTime:', video.currentTime);
-        log('video.networkState:', video.networkState);
-        log('video.readyState:', video.readyState);
-    };
-})();
+// Also catch unhandled errors
+window.addEventListener('error', (event) => {
+  printToOverlay('error', [event.message]);
+});
 
 (function () {
   // CSS style for highlighting focused element with enhanced visuals
