@@ -1,137 +1,153 @@
- // We handle key events ourselves.
-  window.__spatialNavigation__.keyMode = 'NONE';
+(function() {
+    // Function to initialize navigation
+    function initializeNavigation() {
+        // Select initial buttons (SIGN UP and LOG IN)
+        const mainContainer = document.querySelector('div[style*="flex-direction: column; align-items: center; justify-content: center; height: 100vh"]');
+        const initialButtons = mainContainer && mainContainer.offsetParent !== null
+            ? Array.from(mainContainer.querySelectorAll('button[tabindex="0"][style*="font-family: \\"Montserrat\\", sans-serif; cursor: pointer; height: 50px;"]'))
+                .filter(el => !el.disabled && el.offsetParent !== null && (el.textContent.trim() === 'SIGN UP' || el.textContent.trim() === 'LOG IN'))
+            : [];
 
-  var ARROW_KEY_CODE = { 37: 'left', 38: 'up', 39: 'right', 40: 'down' };
+        // Select login form elements (Email, Password, LOG IN button, Forgot Password?)
+        const loginContainer = Array.from(document.querySelectorAll('div[style*="flex-direction: column; justify-content: space-between; padding-top: 60px"]'))
+            .find(el => el.offsetParent !== null && getComputedStyle(el).display !== 'none');
+        const loginElements = loginContainer
+            ? Array.from(loginContainer.querySelectorAll('input[type="text"], input[type="password"], button[tabindex="0"]'))
+                .filter(el => !el.disabled && el.offsetParent !== null && el.style.display !== 'none' && (el.tagName === 'INPUT' || el.textContent.trim() === 'LOG IN' || el.textContent.trim() === 'Forgot Password?'))
+            : [];
 
-  var uiContainer = document.createElement('div');
-  uiContainer.classList.add('ytaf-ui-container');
-  uiContainer.style['display'] = 'none';
-  uiContainer.setAttribute('tabindex', 0);
-  uiContainer.addEventListener(
-    'focus',
-    () => console.info('uiContainer focused!'),
-    true
-  );
-  uiContainer.addEventListener(
-    'blur',
-    () => console.info('uiContainer blured!'),
-    true
-  );
+        // Use login elements if available, otherwise initial buttons
+        const focusableElements = loginElements.length > 0 ? loginElements : initialButtons;
 
-  uiContainer.addEventListener(
-    'keydown',
-    (evt) => {
-      console.info('uiContainer key event:', evt.type, evt.keyCode, evt);
-      if (evt.keyCode !== 404 && evt.keyCode !== 172) {
-        if (evt.keyCode in ARROW_KEY_CODE) {
-          navigate(ARROW_KEY_CODE[evt.keyCode]);
-        } else if (evt.keyCode === 13 || evt.keyCode === 32) {
-          // "OK" button
-          console.log('OK button pressed');
-          const focusedElement = document.querySelector(':focus');
-          if (focusedElement.type === 'checkbox') {
-            focusedElement.checked = !focusedElement.checked;
-            focusedElement.dispatchEvent(new Event('change'));
-          }
-          evt.preventDefault();
-          evt.stopPropagation();
-          return;
-        } else if (evt.keyCode === 27 && document.querySelector(':focus').type !== 'text') {
-          // Back button
-          uiContainer.style.display = 'none';
-          uiContainer.blur();
-        } else if (document.querySelector(':focus').type === 'text' && evt.keyCode === 27) {
-          const focusedElement = document.querySelector(':focus');
-          focusedElement.value = focusedElement.value.slice(0, -1);
+        if (focusableElements.length === 0) {
+            console.log('No focusable elements found.');
+            console.log('Main container found:', !!mainContainer, mainContainer ? getComputedStyle(mainContainer).display : 'N/A');
+            console.log('Login container found:', !!loginContainer, loginContainer ? getComputedStyle(loginContainer).display : 'N/A');
+            return false;
         }
 
+        console.log('Found focusable elements:', focusableElements.map(el => ({
+            tag: el.tagName,
+            type: el.type || 'N/A',
+            text: el.textContent.trim() || el.placeholder || 'N/A',
+            attributes: Array.from(el.attributes).map(attr => `${attr.name}: ${attr.value}`)
+        })));
 
-        if (evt.key === 'Enter' || evt.Uc?.key === 'Enter') {
-          // If the focused element is a text input, emit a change event.
-          if (document.querySelector(':focus').type === 'text') {
-            document.querySelector(':focus').dispatchEvent(new Event('change'));
-          }
+        // Force initial focus to the first element
+        if (document.activeElement !== focusableElements[0]) {
+            focusableElements[0].focus();
+            console.log('Initial focus forced to:', focusableElements[0].textContent.trim() || focusableElements[0].placeholder || focusableElements[0].tagName);
         }
-      }
-    },
-    true
-  );
 
-  uiContainer.innerHTML = `
-<h1>TizenTube Theme Configuration</h1>
-<label for="__barColor">Navigation Bar Color: <input type="text" id="__barColor"/></label>
-<label for="__routeColor">Main Content Color: <input type="text" id="__routeColor"/></label>
-<div><small>Sponsor segments skipping - https://sponsor.ajay.app</small></div>
-`;
-  document.querySelector('body').appendChild(uiContainer);
+        // Remove existing keydown listeners and add new one in capture phase
+        document.removeEventListener('keydown', handleKeydown);
+        document.addEventListener('keydown', handleKeydown, { capture: true });
 
-  uiContainer.querySelector('#__barColor').value = configRead('focusContainerColor');
-  uiContainer.querySelector('#__barColor').addEventListener('change', (evt) => {
-    configWrite('focusContainerColor', evt.target.value);
-    updateStyle();
-  });
+        function handleKeydown(event) {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
 
-  uiContainer.querySelector('#__routeColor').value = configRead('routeColor');
-  uiContainer.querySelector('#__routeColor').addEventListener('change', (evt) => {
-    configWrite('routeColor', evt.target.value);
-    updateStyle();
-  });
+            // Allow typing in input fields
+            if (document.activeElement.tagName === 'INPUT' && !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Escape'].includes(event.key)) {
+                return;
+            }
 
-  var eventHandler = (evt) => {
-    // We handle key events ourselves.
-    console.info(
-      'Key event:',
-      evt.type,
-      evt.keyCode,
-      evt.keyCode,
-      evt.defaultPrevented
-    );
-    if (evt.keyCode == 403) {
-      console.info('Taking over!');
-      evt.preventDefault();
-      evt.stopPropagation();
-      if (evt.type === 'keydown') {
-        if (uiContainer.style.display === 'none') {
-          console.info('Showing and focusing!');
-          uiContainer.style.display = 'block';
-          uiContainer.focus();
-        } else {
-          console.info('Hiding!');
-          uiContainer.style.display = 'none';
-          uiContainer.blur();
+            let currentElement = document.activeElement;
+            let currentIndex = focusableElements.indexOf(currentElement);
+
+            // If focus is not on a target element, force it to the first element
+            if (currentIndex === -1) {
+                console.log('No valid focus. Current active element:', {
+                    tag: currentElement.tagName,
+                    id: currentElement.id,
+                    class: currentElement.className,
+                    text: currentElement.textContent.trim().substring(0, 20)
+                });
+                focusableElements[0].focus();
+                currentElement = focusableElements[0];
+                currentIndex = 0;
+                console.log('Focus reset to:', currentElement.textContent.trim() || currentElement.placeholder || currentElement.tagName);
+            }
+
+            switch (event.key) {
+                case 'ArrowUp':
+                case 'ArrowLeft':
+                    if (currentIndex > 0) {
+                        focusableElements[currentIndex - 1].focus();
+                        console.log('Focused:', focusableElements[currentIndex - 1].textContent.trim() || focusableElements[currentIndex - 1].placeholder || focusableElements[currentIndex - 1].tagName);
+                    }
+                    break;
+
+                case 'ArrowDown':
+                case 'ArrowRight':
+                    if (currentIndex < focusableElements.length - 1) {
+                        focusableElements[currentIndex + 1].focus();
+                        console.log('Focused:', focusableElements[currentIndex + 1].textContent.trim() || focusableElements[currentIndex + 1].placeholder || focusableElements[currentIndex + 1].tagName);
+                    }
+                    break;
+
+                case 'Enter':
+                    if (currentElement.tagName === 'BUTTON') {
+                        event.preventDefault();
+                        currentElement.click();
+                        console.log(`Button clicked: ${currentElement.textContent.trim()}`);
+                    }
+                    break;
+
+                case 'Escape':
+                    event.preventDefault();
+                    focusableElements[0].focus();
+                    console.log('Focus reset to:', focusableElements[0].textContent.trim() || focusableElements[0].placeholder || focusableElements[0].tagName);
+                    break;
+            }
         }
-      }
-      return false;
-    } else if (evt.keyCode == 404) {
-      if (evt.type === 'keydown') {
-        modernUI();
-      }
-    };
-    return true;
-  }
 
-  // Red, Green, Yellow, Blue
-  // 403, 404, 405, 406
-  // ---, 172, 170, 191
-  document.addEventListener('keydown', eventHandler, true);
-  document.addEventListener('keypress', eventHandler, true);
-  document.addEventListener('keyup', eventHandler, true);
+        return true;
+    }
 
-  setTimeout(() => {
-    showToast('Welcome to TizenTube', 'Go to settings and scroll down to TizenTube category to open TizenTube Settings, open playback settings, click on Speed to open Video Speed Settings and press [RED] to open TizenTube Theme Settings.');
-  }, 2000);
-
-  // Fix UI issues, again. Love, Googol.
-
-  if (configRead('enableFixedUI')) {
-    try {
-      const observer = new MutationObserver((_, _2) => {
-        const body = document.body;
-        if (body.classList.contains('app-quality-root')) {
-          body.classList.remove('app-quality-root');
+    // Add focus styling with high specificity
+    const style = document.createElement('style');
+    style.textContent = `
+        button[tabindex="0"][style*="font-family: \\"Montserrat\\", sans-serif"]:focus,
+        input.no-outline-focus:focus {
+            outline: 3px solid #ffffff !important;
+            outline-offset: 3px !important;
+            background-color: rgba(255, 255, 255, 0.7) !important;
+            z-index: 1000 !important;
         }
-      });
-      observer.observe(document.body, { attributes: true, childList: false, subtree: false });
-    } catch (e) { }
-  }
-}
+    `;
+    document.head.appendChild(style);
+
+    // Attempt initialization immediately
+    if (!initializeNavigation()) {
+        // Retry with MutationObserver for dynamic content
+        const observer = new MutationObserver(() => {
+            if (initializeNavigation()) {
+                observer.disconnect();
+                console.log('Navigation initialized after DOM change');
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+
+        // Fallback: retry after delays
+        const retries = [1000, 2000, 3000, 5000, 10000];
+        retries.forEach((delay, index) => {
+            setTimeout(() => {
+                if (initializeNavigation()) {
+                    observer.disconnect();
+                    console.log(`Navigation initialized after ${delay}ms timeout`);
+                }
+            }, delay);
+        });
+    }
+
+    // Monitor LOG IN button click to reinitialize navigation
+    document.addEventListener('click', (event) => {
+        if (event.target.tagName === 'BUTTON' && event.target.textContent.trim() === 'LOG IN') {
+            console.log('LOG IN button clicked, reinitializing navigation');
+            setTimeout(initializeNavigation, 100); // Short delay to allow DOM update
+        }
+    }, { capture: true });
+})();
