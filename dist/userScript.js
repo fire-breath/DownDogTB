@@ -1,4 +1,3 @@
-// It is from chatgpt mostly xD
 (function () {
   // CSS style for highlighting focused element
   const style = document.createElement('style');
