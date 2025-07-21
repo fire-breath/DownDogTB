@@ -219,10 +219,10 @@
         e.preventDefault();
         break;
 
-      case 'Enter':
-        currentEl.click(); // Activate focused element
-        e.preventDefault();
-        break;
+      //case 'Enter':
+      //  currentEl.click(); // Activate focused element
+      //  e.preventDefault();
+      //  break;
 
       case 'Escape':
       case 'Backspace':
