@@ -1,3 +1,5 @@
+src="https://cdn.jsdelivr.net/npm/hls.js@latest"
+
 // Create the debug overlay
 const debugWindow = document.createElement('div');
 debugWindow.style.position = 'fixed';
