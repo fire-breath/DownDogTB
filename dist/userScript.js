@@ -210,6 +210,9 @@
     switch (key) {
       case 'ArrowDown':
       case 'ArrowRight':
+        e.stopImmediatePropagation();
+        e.stopPropagation()
+        e.preventDefault()
         //document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
         //document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
         //document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
@@ -222,12 +225,16 @@
           nextIndex = (focusIndex + 1) % elements.length;
           focusElement(nextIndex);
         }
+        e.stopImmediatePropagation();
         e.stopPropagation()
         e.preventDefault();
         break;
 
       case 'ArrowUp':
       case 'ArrowLeft':
+        e.stopImmediatePropagation();
+        e.stopPropagation()
+        e.preventDefault()
         if (config.useSpatialNavigation) {
           const nextEl = getClosestElement(currentEl, key);
           focusElement(nextEl);
@@ -235,6 +242,7 @@
           nextIndex = (focusIndex - 1 + elements.length) % elements.length;
           focusElement(nextIndex);
         }
+        e.stopImmediatePropagation();
         e.stopPropagation()
         e.preventDefault();
         break;
