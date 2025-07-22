@@ -3,6 +3,7 @@ Trying to create a module for tizenbrew with downdog yoga website.
 # Wow, it does work
 - navigation works well
  # To do:
+  - on player essentialy only playing works (nothing besides that currently) and also no returning yet to the main menu
   - only logging via email supported (sign up/forget password and logging via google/apple not supported yet)
   - navigation for the overlayed windows (done)
   - navigation: - maxed out to right -> brings to the submit button (done)
