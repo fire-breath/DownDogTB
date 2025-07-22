@@ -15,18 +15,6 @@
     .navigable-excluded {
       outline: none !important;
     }
-    .focus-tooltip {
-      position: absolute;
-      background: #333;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 5px;
-      font-size: 12px;
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-      white-space: nowrap;
-    }
   `;
   document.head.appendChild(style);
 
@@ -35,7 +23,6 @@
     navigableSelector: 'button, input, [tabindex="0"], .navigable',
     excludeSelector: '.navigable-exclude',
     useSpatialNavigation: true,
-    tooltipEnabled: true
   };
 
   // Cache for navigable elements
@@ -44,8 +31,14 @@
   
   // Helper: get all navigable elements with dynamic updates
   function updateNavigableElements() {
-    navigableElementsCache = Array.from(document.querySelectorAll(config.navigableSelector))
-      .filter(el => el.offsetParent !== null && !el.matches(config.excludeSelector));
+    if ([...document.querySelectorAll('span')].find(el => el.textContent.trim() === 'Resume Practice')?.textContent.trim() === 'Resume Practice') {
+      navigableElementsCache = Array.from(document.querySelectorAll(config.navigableSelector))
+        .filter(el => el.offsetParent !== null && !el.matches(config.excludeSelector) && (el.innerText.toLowerCase() == 'no'|| el.innerText.toLowerCase() == 'yes' ));
+    }
+    else {
+      navigableElementsCache = Array.from(document.querySelectorAll(config.navigableSelector))
+        .filter(el => el.offsetParent !== null && !el.matches(config.excludeSelector));
+    }
     return navigableElementsCache;
   }
 
@@ -102,7 +95,16 @@
           break;
       }
     });
-
+      if (closestEl) {
+              return closestEl;
+          } else if (direction === 'ArrowRight' && currentEl.innerText.toLowerCase().trim() !== 'yes') {
+              // Special case for ArrowRight: Check for a "SELECT" button
+              const selectButton = [...document.querySelectorAll('button')]
+                .find(el => el.offsetParent !== null && ['select','start'].includes(el.innerText.toLowerCase().trim()));
+              return selectButton || currentEl;
+          } else {
+              return currentEl;
+          }
     return closestEl || currentEl;
   }
 
@@ -123,11 +125,9 @@
       focusIndex = elements.indexOf(targetEl);
     }
 
-    // Remove highlight and tooltips from all
+    // Remove highlight
     elements.forEach(el => {
       el.classList.remove('tv-focus');
-      const tooltip = el.querySelector('.focus-tooltip');
-      if (tooltip) tooltip.remove();
     });
 
     // Apply focus and highlight
@@ -137,15 +137,7 @@
     // Accessibility: Announce to screen readers
     targetEl.setAttribute('aria-live', 'polite');
     targetEl.setAttribute('aria-label', targetEl.textContent.trim() || 'Focused element');
-
-    // Add tooltip if enabled
-    if (config.tooltipEnabled && targetEl.textContent.trim()) {
-      const tooltip = document.createElement('span');
-      tooltip.className = 'focus-tooltip';
-      tooltip.textContent = targetEl.textContent.trim();
-      targetEl.appendChild(tooltip);
-      requestAnimationFrame(() => tooltip.style.opacity = '1');
-    }
+    
   }
 
   // Keyboard event handler with extended key support
@@ -213,16 +205,13 @@
   const observer = new MutationObserver(() => {
     updateNavigableElements();
     if (!document.activeElement || !navigableElementsCache.includes(document.activeElement)) {
-      focusElement(0); // Reset focus if lost
+      if ([...document.querySelectorAll('div')].find(el => getComputedStyle(el).backgroundColor === 'rgba(255, 255, 255, 0.9)')){
+        focusElement([...document.querySelectorAll('div')].find(el => getComputedStyle(el).backgroundColor === 'rgba(255, 255, 255, 0.9)'));
+      }
+      else{
+        focusElement(0); // Reset focus if lost
+      }
     }
   });
   observer.observe(document.body, { childList: true, subtree: true });
-
-  // Initial focus on load
-  window.addEventListener('load', () => {
-    setTimeout(() => focusElement(0), 100);
-  });
-
-  // Debugging: Log focus changes (optional)
-  // window.addEventListener('focusin', (e) => console.log('Focus moved to:', e.target));
 })();
