@@ -200,8 +200,14 @@
         break;
 
       case 'MediaTrackPrevious': // fallback label
-        window.history.back();
-        e.preventDefault();
+        if (window.location.href !== 'https://www.downdogapp.com/web') {
+          window.location.href = 'https://www.downdogapp.com/web';
+          e.preventDefault();
+        }
+        else{
+          window.history.back();
+          e.preventDefault();
+        }
         break;
         
       default:
