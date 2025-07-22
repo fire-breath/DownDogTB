@@ -10,3 +10,4 @@ Trying to create a module for tizenbrew with downdog yoga website.
   - joruney -> calendar -> reset current selection when navigating through "<" and ">"
   - sounds disables when selecting the music in styles in practice selections
   - accounts settings tab not supported yet
+  - meaby a little better navigation through the health disclaimer
