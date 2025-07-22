@@ -174,16 +174,6 @@
         e.preventDefault();
         break;
 
-      case 'Home':
-        focusElement(0);
-        e.preventDefault();
-        break;
-
-      case 'End':
-        focusElement(elements.length - 1);
-        e.preventDefault();
-        break;
-
       case 'Enter':
         //currentEl.click(); // Activate focused element
         const overlay = document.querySelector('div[aria-label="Tap to begin"]');
@@ -192,28 +182,17 @@
         }
         e.preventDefault();
         break;
-
-      case 'Escape':
-      case 'Backspace':
-        window.history.back();
-        e.preventDefault();
-        break;
-
-      case 'MediaTrackPrevious': // fallback label
-        if (window.location.href !== 'https://www.downdogapp.com/web') {
-          window.location.href = 'https://www.downdogapp.com/web';
-          e.preventDefault();
-        }
-        else{
-          window.history.back();
-          e.preventDefault();
-        }
-        break;
         
       default:
         if (e.keyCode === 10009) { // <- This is the actual Return button on Tizen remotes
-          window.history.back();   // or your custom back action
-          e.preventDefault();
+          if (window.location.href !== 'https://www.downdogapp.com/web') {
+            window.location.href = 'https://www.downdogapp.com/web';
+            e.preventDefault();
+          }
+          else{
+            window.history.back();
+            e.preventDefault();
+          }
   }
   break;
     }
