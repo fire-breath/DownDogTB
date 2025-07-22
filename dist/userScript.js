@@ -222,7 +222,7 @@
           nextIndex = (focusIndex + 1) % elements.length;
           focusElement(nextIndex);
         }
-        e.stopPropagation()
+        //e.stopPropagation()
         e.preventDefault();
         break;
 
@@ -235,7 +235,7 @@
           nextIndex = (focusIndex - 1 + elements.length) % elements.length;
           focusElement(nextIndex);
         }
-        e.stopPropagation()
+        //e.stopPropagation()
         e.preventDefault();
         break;
 
