@@ -182,7 +182,7 @@
         }
         e.preventDefault();
         break;
-      case '10009':
+      case 10009:
         window.history.back();
         e.preventDefault();
         break;
