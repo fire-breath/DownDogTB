@@ -38,82 +38,6 @@
     tooltipEnabled: true
   };
 
-  function startAndToggleVideo() {
-  // Check for the overlay
-  const overlay = document.querySelector('div[aria-label="Tap to begin"]');
-  if (overlay) {
-    try {
-      overlay.click(); // Dismiss the overlay
-      console.log("Overlay clicked to start video");
-    } catch (error) {
-      console.error("Error clicking overlay:", error);
-    }
-  }
-
-  // Small delay to ensure overlay is dismissed before toggling video
-  setTimeout(() => toggleVideoPlayback(), 100);
-}
-
-function toggleVideoPlayback() {
-  const video = document.querySelector("video");
-  if (!video) {
-    console.warn("Video element not found");
-    return;
-  }
-
-  try {
-    if (video.paused) {
-      video.play().catch(error => {
-        console.error("Play failed:", error);
-        // Fallback to spacebar simulation
-        simulateSpacebar(video);
-      });
-    } else {
-      video.pause();
-    }
-    console.log(`Video ${video.paused ? "paused" : "playing"}`);
-  } catch (error) {
-    console.error("Direct toggle failed:", error);
-    simulateSpacebar(video);
-  }
-}
-
-function simulateSpacebar(targetElement) {
-  if (!targetElement) {
-    console.warn("Target element for spacebar simulation not found");
-    return;
-  }
-
-  const spaceEvent = new KeyboardEvent("keydown", {
-    key: " ",
-    code: "Space",
-    keyCode: 32, // Deprecated but included for compatibility
-    bubbles: true,
-    cancelable: true
-  });
-
-  try {
-    // Focus and dispatch to the target element (video)
-    targetElement.focus();
-    targetElement.dispatchEvent(spaceEvent);
-    console.log("Spacebar event dispatched to video");
-
-    // Also try the document
-    document.dispatchEvent(spaceEvent);
-    console.log("Spacebar event dispatched to document");
-
-    // Try the overlay container (if still present)
-    const overlay = document.querySelector('div[aria-label="Tap to begin"]');
-    if (overlay) {
-      overlay.focus();
-      overlay.dispatchEvent(spaceEvent);
-      console.log("Spacebar event dispatched to overlay");
-    }
-  } catch (error) {
-    console.error("Spacebar simulation failed:", error);
-  }
-}
-
   // Cache for navigable elements
   let navigableElementsCache = [];
   let focusIndex = 0;
@@ -270,11 +194,13 @@ function simulateSpacebar(targetElement) {
 
       case 'Enter':
         //currentEl.click(); // Activate focused element
-        try {
-          startAndToggleVideo();
-        } catch (error) {
-          console.error("Error in startAndToggleVideo:", error);
-        }
+          new KeyboardEvent("keydown", {
+              key: " ",
+              code: "Space",
+              keyCode: 32,
+              bubbles: true,
+              cancelable: true
+            })
         e.preventDefault();
         break;
 
