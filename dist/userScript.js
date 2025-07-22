@@ -28,6 +28,7 @@
   // Cache for navigable elements
   let navigableElementsCache = [];
   let focusIndex = 0;
+  let menu_looper = 0;
   
   // Helper: get all navigable elements with dynamic updates
   function updateNavigableElements() {
@@ -102,12 +103,11 @@
               const selectButton = [...document.querySelectorAll('button')]
                 .find(el => el.offsetParent !== null && ['select','start'].includes(el.innerText.toLowerCase().trim()));
               return selectButton || currentEl;
-          } else if (direction === 'ArrowDown' && (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down'))){
-                        setInterval(() => {
+          } else if (direction === 'ArrowDown' && (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down'))){       
               document.querySelector('img[src*="thumbs_up"]').style.bottom = "193px";
               document.querySelector('img[src*="thumbs_down"]').style.bottom = "193px";
               document.querySelectorAll('[style*="display: none"], [style*="opacity: 0"], [aria-hidden="true"]').forEach(el => {
-                if (el.tagName !== 'IMG'&& (!/(VIDEO QUALITY|STYLE|POSE NAMES|EXCLUDE BUTTONS|COUNTDOWN TIMER|TIMELINE VISIBLE|POSES ON TIMELINE)/i.test(el.textContent)) && !el.querySelector('input.volume-slider[type="range"]')){
+                if (!el.querySelector('img[src*="//media.downdogapp.com/asset/left_arrow_icon_ca898eca@1x.png"]')&&el.tagName !== 'IMG'&& (!/(VIDEO QUALITY|STYLE|POSE NAMES|EXCLUDE BUTTONS|COUNTDOWN TIMER|TIMELINE VISIBLE|POSES ON TIMELINE)/i.test(el.textContent)) && !el.querySelector('input.volume-slider[type="range"]')){
                 if (
                   !el.classList.contains('big-spinner') &&
                   el.id !== 'spinner' &&
@@ -130,10 +130,38 @@
                   }
                 }}
               });
-            }, 0);
+            
           }
       
            else {
+              if (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down')||currentEl.src.toLowerCase().includes('skip_icon')||(currentEl.tagName === 'BUTTON' && currentEl.classList.contains('tv-focus')))
+              {
+                document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
+                document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
+                document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
+                document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
+                document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
+              document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px";
+              document.querySelectorAll('[style*="display: flex"], [style*="display: table"], [style*="opacity: 1"], [aria-hidden="false"]').forEach(el => {
+                if (!el.querySelector('video')&&!el.querySelector('img[src*="//media.downdogapp.com/asset/left_arrow_icon_ca898eca@1x.png"]')&&el.tagName !== 'IMG'&& (!/(VIDEO QUALITY|STYLE|POSE NAMES|EXCLUDE BUTTONS|COUNTDOWN TIMER|TIMELINE VISIBLE|POSES ON TIMELINE)/i.test(el.textContent)) && !el.querySelector('input.volume-slider[type="range"]')){
+                if (
+                  !el.classList.contains('big-spinner') &&
+                  el.id !== 'spinner' &&
+                  !el.querySelector('span[style*="color: rgb(255, 255, 255)"]')?.textContent.includes('Tap to begin') &&
+                  !el.querySelector('img[src*="//media.downdogapp.com/asset/thumbs_up_icon_8012f8a6"]')
+                ) {
+                  if (el.style.display === 'flex' || el.style.display === 'table') {
+                    el.style.display = 'none'
+            	  }
+                  if (el.style.opacity === '1') {
+                    el.style.opacity = '0';
+                  }
+                  if (el.getAttribute('aria-hidden') === 'false') {
+                    el.setAttribute('aria-hidden', 'true');
+                  }
+                }}
+              });
+              }
               return currentEl;
           }
     return closestEl || currentEl;
@@ -179,10 +207,17 @@
 
     const currentEl = elements[focusIndex];
     let nextIndex;
-
     switch (key) {
       case 'ArrowDown':
       case 'ArrowRight':
+        e.stopPropagation()
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
+        document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
+        document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
+        document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
+        document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px"
         if (config.useSpatialNavigation) {
           const nextEl = getClosestElement(currentEl, key);
           focusElement(nextEl);
@@ -195,6 +230,9 @@
 
       case 'ArrowUp':
       case 'ArrowLeft':
+        e.stopPropagation()
+        e.preventDefault();
+        e.stopImmediatePropagation();
         if (config.useSpatialNavigation) {
           const nextEl = getClosestElement(currentEl, key);
           focusElement(nextEl);
@@ -210,6 +248,12 @@
         const overlay = document.querySelector('div[aria-label="Tap to begin"]');
         if (overlay) {
           overlay.click(); // Dismiss the overlay
+          document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
+                document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
+                document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
+                document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
+                document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
+              document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px";
         }
         e.preventDefault();
         break;
@@ -230,6 +274,7 @@
 
   // Handle dynamic content changes
   const observer = new MutationObserver(() => {
+    
     updateNavigableElements();
     if (!document.activeElement || !navigableElementsCache.includes(document.activeElement)) {
       if ([...document.querySelectorAll('div')].find(el => getComputedStyle(el).backgroundColor === 'rgba(255, 255, 255, 0.9)')){
