@@ -198,6 +198,18 @@
         window.history.back();
         e.preventDefault();
         break;
+
+      case 'MediaTrackPrevious': // fallback label
+        window.history.back();
+        e.preventDefault();
+        break;
+        
+      default:
+        if (e.keyCode === 10009) { // <- This is the actual Return button on Tizen remotes
+          window.history.back();   // or your custom back action
+          e.preventDefault();
+  }
+  break;
     }
   });
 
