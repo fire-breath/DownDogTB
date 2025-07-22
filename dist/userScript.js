@@ -210,11 +210,11 @@
     switch (key) {
       case 'ArrowDown':
       case 'ArrowRight':
-        document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
-        document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
-        document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
-        document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
-        document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px"
+        //document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
+        //document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
+        //document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
+        //document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
+        //document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px"
         if (config.useSpatialNavigation) {
           const nextEl = getClosestElement(currentEl, key);
           focusElement(nextEl);
@@ -244,12 +244,12 @@
         const overlay = document.querySelector('div[aria-label="Tap to begin"]');
         if (overlay) {
           overlay.click(); // Dismiss the overlay
-          document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
-                document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
-                document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
-                document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
-                document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
-              document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px";
+          //document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
+                //document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
+                //document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
+                //document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
+                //document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
+              //document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px";
         }
         e.preventDefault();
         break;
@@ -259,10 +259,6 @@
             window.location.href = 'https://www.downdogapp.com/web';
             e.preventDefault();
             }
-           else{
-             tizen.application.getCurrentApplication().exit();
-             e.preventDefault();
-             }
         }
   break;
     }
