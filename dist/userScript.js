@@ -224,7 +224,6 @@
         }
         e.stopPropagation()
         e.preventDefault();
-        e.stopImmediatePropagation();
         break;
 
       case 'ArrowUp':
@@ -238,7 +237,6 @@
         }
         e.stopPropagation()
         e.preventDefault();
-        e.stopImmediatePropagation();
         break;
 
       case 'Enter':
