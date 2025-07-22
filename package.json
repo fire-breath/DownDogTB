@@ -15,8 +15,7 @@
     "MediaFastForward",
     "MediaRewind",
     "MediaTrackNext",
-    "MediaTrackPrevious",
-    "Back"
+    "MediaTrackPrevious"
   ],
   "repository": {
     "url": "https://github.com/fire-breath/DownDogTB"
