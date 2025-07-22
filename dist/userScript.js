@@ -192,6 +192,7 @@
              tizen.application.getCurrentApplication().exit();
              e.preventDefault();
              }
+        }
   break;
     }
   });
