@@ -194,13 +194,10 @@
 
       case 'Enter':
         //currentEl.click(); // Activate focused element
-          new KeyboardEvent("keydown", {
-              key: " ",
-              code: "Space",
-              keyCode: 32,
-              bubbles: true,
-              cancelable: true
-            })
+        const overlay = document.querySelector('div[aria-label="Tap to begin"]');
+        if (overlay) {
+          overlay.click(); // Dismiss the overlay
+        }
         e.preventDefault();
         break;
 
