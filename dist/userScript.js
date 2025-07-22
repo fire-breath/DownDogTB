@@ -102,7 +102,38 @@
               const selectButton = [...document.querySelectorAll('button')]
                 .find(el => el.offsetParent !== null && ['select','start'].includes(el.innerText.toLowerCase().trim()));
               return selectButton || currentEl;
-          } else {
+          } else if (direction === 'ArrowDown' && (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down'))){
+                        setInterval(() => {
+              document.querySelector('img[src*="thumbs_up"]').style.bottom = "193px";
+              document.querySelector('img[src*="thumbs_down"]').style.bottom = "193px";
+              document.querySelectorAll('[style*="display: none"], [style*="opacity: 0"], [aria-hidden="true"]').forEach(el => {
+                if (el.tagName !== 'IMG'&& (!/(VIDEO QUALITY|STYLE|POSE NAMES|EXCLUDE BUTTONS|COUNTDOWN TIMER|TIMELINE VISIBLE|POSES ON TIMELINE)/i.test(el.textContent)) && !el.querySelector('input.volume-slider[type="range"]')){
+                if (
+                  !el.classList.contains('big-spinner') &&
+                  el.id !== 'spinner' &&
+                  !el.querySelector('span[style*="color: rgb(255, 255, 255)"]')?.textContent.includes('Tap to begin') &&
+                  !el.querySelector('img[src*="//media.downdogapp.com/asset/thumbs_up_icon_8012f8a6"]')
+                ) {
+                  if (el.style.display === 'none') {
+            	  if (!el.querySelector('img[src*="//media.downdogapp.com/asset/play_icon_9b1d81d5"]')){
+            	    el.style.display = 'flex';
+            	  }
+            	  else {
+                    el.style.display = 'table';
+                  }
+            	  }
+                  if (el.style.opacity === '0') {
+                    el.style.opacity = '1';
+                  }
+                  if (el.getAttribute('aria-hidden') === 'true') {
+                    el.setAttribute('aria-hidden', 'false');
+                  }
+                }}
+              });
+            }, 0);
+          }
+      
+           else {
               return currentEl;
           }
     return closestEl || currentEl;
