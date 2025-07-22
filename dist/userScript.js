@@ -182,18 +182,12 @@
         }
         e.preventDefault();
         break;
-        
+      case '10009':
+        window.history.back();
+        e.preventDefault();
+        break;
       default:
-        if (e.keyCode === 10009) { // <- This is the actual Return button on Tizen remotes
-          if (window.location.href !== 'https://www.downdogapp.com/web') {
-            window.location.href = 'https://www.downdogapp.com/web';
-            e.preventDefault();
-          }
-          else{
-            window.history.back();
-            e.preventDefault();
-          }
-  }
+
   break;
     }
   });
