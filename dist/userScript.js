@@ -96,9 +96,10 @@
           break;
       }
     });
+    
       if (closestEl) {
               return closestEl;
-          } else if (direction === 'ArrowRight' && currentEl.innerText.toLowerCase().trim() !== 'yes') {
+          } else if (direction === 'ArrowRight' && currentEl.innerText.toLowerCase().trim() !== 'yes' && !document.querySelector('img[src*="//media.downdogapp.com/asset/play_icon_9b1d81d5"]')) {
               // Special case for ArrowRight: Check for a "SELECT" button
               const selectButton = [...document.querySelectorAll('button')]
                 .find(el => el.offsetParent !== null && ['select','start'].includes(el.innerText.toLowerCase().trim()));
@@ -133,9 +134,7 @@
             
           }
       
-           else {
-              if (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down')||currentEl.src.toLowerCase().includes('skip_icon')||(currentEl.tagName === 'BUTTON' && currentEl.classList.contains('tv-focus')))
-              {
+           else if (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down')||currentEl.src.toLowerCase().includes('skip_icon')){
                 document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
                 document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
                 document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
@@ -161,7 +160,6 @@
                   }
                 }}
               });
-              }
               return currentEl;
           }
     return closestEl || currentEl;
