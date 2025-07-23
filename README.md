@@ -11,3 +11,5 @@ github modules ->
 - You can navigate on a player, but it is not perfect, to show UI go down, to hide to go fully up (you can essentially stop/pasue and change the quality to HD), those like dislike buttons works
 
 If I will be bored I will try to make it better, but for now you can use it quite well.
+
+TizenBrew: https://github.com/reisxd/TizenBrew
