@@ -28,7 +28,6 @@
   // Cache for navigable elements
   let navigableElementsCache = [];
   let focusIndex = 0;
-  let menu_looper = 0;
   
   // Helper: get all navigable elements with dynamic updates
   function updateNavigableElements() {
@@ -96,10 +95,42 @@
           break;
       }
     });
-    
-      if (closestEl) {
+               
+       if (closestEl) {
+                document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
+                document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
+                document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
+                document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
               return closestEl;
-          } else if (direction === 'ArrowRight' && currentEl.innerText.toLowerCase().trim() !== 'yes' && !document.querySelector('img[src*="//media.downdogapp.com/asset/play_icon_9b1d81d5"]')) {
+          } else if (direction !== 'ArrowDown'&&(elements[focusIndex].src.toLowerCase().includes('thumbs_up')||elements[focusIndex].src.toLowerCase().includes('thumbs_down')||elements[focusIndex].src.toLowerCase().includes('skip_icon'))){
+                document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
+                document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
+                document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
+                document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
+                document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
+              document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px";
+              document.querySelectorAll('[style*="display: flex"], [style*="display: table"], [style*="opacity: 1"], [aria-hidden="false"]').forEach(el => {
+                if (!el.querySelector('video')&&!el.querySelector('img[src*="//media.downdogapp.com/asset/left_arrow_icon_ca898eca@1x.png"]')&&el.tagName !== 'IMG'&& (!/(VIDEO QUALITY|STYLE|POSE NAMES|EXCLUDE BUTTONS|COUNTDOWN TIMER|TIMELINE VISIBLE|POSES ON TIMELINE)/i.test(el.textContent)) && !el.querySelector('input.volume-slider[type="range"]')){
+                if (
+                  !el.classList.contains('big-spinner') &&
+                  el.id !== 'spinner' &&
+                  !el.querySelector('span[style*="color: rgb(255, 255, 255)"]')?.textContent.includes('Tap to begin') &&
+                  !el.querySelector('img[src*="//media.downdogapp.com/asset/thumbs_up_icon_8012f8a6"]')
+                ) {
+                  if (el.style.display === 'flex' || el.style.display === 'table') {
+                    el.style.display = 'none'
+            	  }
+                  if (el.style.opacity === '1') {
+                    el.style.opacity = '0';
+                  }
+                  if (el.getAttribute('aria-hidden') === 'false') {
+                    el.setAttribute('aria-hidden', 'true');
+                  }
+                }}
+              });
+              return currentEl;
+          }
+       else if (direction === 'ArrowRight' && currentEl.innerText.toLowerCase().trim() !== 'yes' && !document.querySelector('img[src*="//media.downdogapp.com/asset/play_icon_9b1d81d5"]')) {
               // Special case for ArrowRight: Check for a "SELECT" button
               const selectButton = [...document.querySelectorAll('button')]
                 .find(el => el.offsetParent !== null && ['select','start'].includes(el.innerText.toLowerCase().trim()));
@@ -134,34 +165,7 @@
             
           }
       
-           else if (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down')||currentEl.src.toLowerCase().includes('skip_icon')){
-                document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
-                document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
-                document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
-                document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
-                document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
-              document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px";
-              document.querySelectorAll('[style*="display: flex"], [style*="display: table"], [style*="opacity: 1"], [aria-hidden="false"]').forEach(el => {
-                if (!el.querySelector('video')&&!el.querySelector('img[src*="//media.downdogapp.com/asset/left_arrow_icon_ca898eca@1x.png"]')&&el.tagName !== 'IMG'&& (!/(VIDEO QUALITY|STYLE|POSE NAMES|EXCLUDE BUTTONS|COUNTDOWN TIMER|TIMELINE VISIBLE|POSES ON TIMELINE)/i.test(el.textContent)) && !el.querySelector('input.volume-slider[type="range"]')){
-                if (
-                  !el.classList.contains('big-spinner') &&
-                  el.id !== 'spinner' &&
-                  !el.querySelector('span[style*="color: rgb(255, 255, 255)"]')?.textContent.includes('Tap to begin') &&
-                  !el.querySelector('img[src*="//media.downdogapp.com/asset/thumbs_up_icon_8012f8a6"]')
-                ) {
-                  if (el.style.display === 'flex' || el.style.display === 'table') {
-                    el.style.display = 'none'
-            	  }
-                  if (el.style.opacity === '1') {
-                    el.style.opacity = '0';
-                  }
-                  if (el.getAttribute('aria-hidden') === 'false') {
-                    el.setAttribute('aria-hidden', 'true');
-                  }
-                }}
-              });
-              return currentEl;
-          }
+
     return closestEl || currentEl;
   }
 
