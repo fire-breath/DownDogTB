@@ -102,7 +102,7 @@
                 document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
                 document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
               return closestEl;
-          } else if (direction !== 'ArrowDown'&&(elements[focusIndex].src.toLowerCase().includes('thumbs_up')||elements[focusIndex].src.toLowerCase().includes('thumbs_down')||elements[focusIndex].src.toLowerCase().includes('skip_icon'))){
+          } else if (direction !== 'ArrowDown' && document.querySelectorAll('img.tv-focus[src*="//media.downdogapp.com/asset/skip_icon_3ed75db3"]')){
                 document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
                 document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
                 document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
@@ -110,25 +110,30 @@
                 document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
               document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px";
               document.querySelectorAll('[style*="display: flex"], [style*="display: table"], [style*="opacity: 1"], [aria-hidden="false"]').forEach(el => {
-                if (!el.querySelector('video')&&!el.querySelector('img[src*="//media.downdogapp.com/asset/left_arrow_icon_ca898eca@1x.png"]')&&el.tagName !== 'IMG'&& (!/(VIDEO QUALITY|STYLE|POSE NAMES|EXCLUDE BUTTONS|COUNTDOWN TIMER|TIMELINE VISIBLE|POSES ON TIMELINE)/i.test(el.textContent)) && !el.querySelector('input.volume-slider[type="range"]')){
-                if (
-                  !el.classList.contains('big-spinner') &&
-                  el.id !== 'spinner' &&
-                  !el.querySelector('span[style*="color: rgb(255, 255, 255)"]')?.textContent.includes('Tap to begin') &&
-                  !el.querySelector('img[src*="//media.downdogapp.com/asset/thumbs_up_icon_8012f8a6"]')
-                ) {
-                  if (el.style.display === 'flex' || el.style.display === 'table') {
-                    el.style.display = 'none'
-            	  }
-                  if (el.style.opacity === '1') {
-                    el.style.opacity = '0';
-                  }
-                  if (el.getAttribute('aria-hidden') === 'false') {
-                    el.setAttribute('aria-hidden', 'true');
-                  }
-                }}
+
+                    if (el.getAttribute('aria-hidden') === 'false' && el.style.opacity === '1' && el.style.paddingBottom === '10px') {
+                    	el.style.display = 'none';
+                    	el.style.opacity = '0';
+                    	el.setAttribute('aria-hidden', 'true');
+                    }
+                    else if (el.getAttribute('aria-hidden') === 'false' && el.style.opacity === '1' && el.style.display === 'table' && el.style.width === '100%' && el.style.height === '40px') {
+                    	el.style.display = 'none';
+                    	el.style.opacity = '0';
+                    	el.setAttribute('aria-hidden', 'true');
+                    }
+                    else if (el.getAttribute('aria-hidden') === 'false' && el.style.opacity === '1' && el.style.width === '100vw' && el.style.height === '93px') {
+                    	el.style.display = 'none';
+                    	el.style.opacity = '0';
+                    	el.setAttribute('aria-hidden', 'true');
+                    }
+                    else if (el.getAttribute('aria-hidden') === 'false' && el.style.opacity === '1' && el.style.display === 'flex' && el.style.height === '91px') {
+                    	el.style.display = 'none';
+                    	el.style.opacity = '0';
+                    	el.setAttribute('aria-hidden', 'true');
+                    }
+                
               });
-              return currentEl;
+              return closestEl || currentEl;
           }
        else if (direction === 'ArrowRight' && currentEl.innerText.toLowerCase().trim() !== 'yes' && !document.querySelector('img[src*="//media.downdogapp.com/asset/play_icon_9b1d81d5"]')) {
               // Special case for ArrowRight: Check for a "SELECT" button
@@ -139,28 +144,31 @@
               document.querySelector('img[src*="thumbs_up"]').style.bottom = "193px";
               document.querySelector('img[src*="thumbs_down"]').style.bottom = "193px";
               document.querySelectorAll('[style*="display: none"], [style*="opacity: 0"], [aria-hidden="true"]').forEach(el => {
-                if (!el.querySelector('img[src*="//media.downdogapp.com/asset/left_arrow_icon_ca898eca@1x.png"]')&&el.tagName !== 'IMG'&& (!/(VIDEO QUALITY|STYLE|POSE NAMES|EXCLUDE BUTTONS|COUNTDOWN TIMER|TIMELINE VISIBLE|POSES ON TIMELINE)/i.test(el.textContent)) && !el.querySelector('input.volume-slider[type="range"]')){
-                if (
-                  !el.classList.contains('big-spinner') &&
-                  el.id !== 'spinner' &&
-                  !el.querySelector('span[style*="color: rgb(255, 255, 255)"]')?.textContent.includes('Tap to begin') &&
-                  !el.querySelector('img[src*="//media.downdogapp.com/asset/thumbs_up_icon_8012f8a6"]')
-                ) {
-                  if (el.style.display === 'none') {
-            	  if (!el.querySelector('img[src*="//media.downdogapp.com/asset/play_icon_9b1d81d5"]')){
-            	    el.style.display = 'flex';
-            	  }
-            	  else {
-                    el.style.display = 'table';
-                  }
-            	  }
-                  if (el.style.opacity === '0') {
-                    el.style.opacity = '1';
-                  }
-                  if (el.getAttribute('aria-hidden') === 'true') {
-                    el.setAttribute('aria-hidden', 'false');
-                  }
-                }}
+
+if (el.getAttribute('aria-hidden') === 'true' && el.style.opacity === '0' && el.style.display === 'none' && el.style.width === '100%' && el.style.height === '40px') {
+	el.style.display = 'table';
+	el.style.opacity = '1';
+	el.setAttribute('aria-hidden', 'false');
+}
+else if (el.style.paddingBottom === '10px' && el.style.opacity === '0' && el.style.display === 'none' && el.getAttribute('aria-hidden') === 'true') {
+	el.style.display = '';
+	el.style.opacity = '1';
+	el.setAttribute('aria-hidden', 'false');
+}
+else if (el.getAttribute('aria-hidden') === 'true' && el.style.opacity === '0' && el.style.display === 'none' && el.style.width === '100vw' && el.style.height === '93px') {
+	el.style.display = '';
+	el.style.opacity = '1';
+	el.setAttribute('aria-hidden', 'false');
+}
+else if (el.getAttribute('aria-hidden') === 'true' && el.style.opacity === '0' && el.style.display === 'none' && el.style.height === '91px') {
+	el.style.display = 'flex';
+	el.style.opacity = '1';
+	el.setAttribute('aria-hidden', 'false');
+}
+
+
+
+                
               });
             
           }
