@@ -97,18 +97,40 @@
     });
                
        if (closestEl) {
-                document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
-                document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
-                document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
-                document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
+		const thumbsUp = document.querySelector('img[src*="thumbs_up"]');
+		const thumbsDown = document.querySelector('img[src*="thumbs_down"]');
+		
+		if (thumbsUp) {
+		  thumbsUp.style.display = "flex";
+		  thumbsUp.setAttribute('aria-hidden', 'false');
+		}
+		
+		if (thumbsDown) {
+		  thumbsDown.style.display = "flex";
+		  thumbsDown.setAttribute('aria-hidden', 'false');
+		}
               return closestEl;
+          } 
+              else if (direction === 'ArrowRight' && currentEl.innerText.toLowerCase().trim() !== 'yes' && !document.querySelector('img[src*="//media.downdogapp.com/asset/play_icon_9b1d81d5"]')) {
+              // Special case for ArrowRight: Check for a "SELECT" button
+              const selectButton = [...document.querySelectorAll('button')]
+                .find(el => el.offsetParent !== null && ['select','start'].includes(el.innerText.toLowerCase().trim()));
+              return selectButton || currentEl;
           } else if (direction !== 'ArrowDown' && document.querySelectorAll('img.tv-focus[src*="//media.downdogapp.com/asset/skip_icon_3ed75db3"]')){
-                document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
-                document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
-                document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
-                document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
-                document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
-              document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px";
+			const thumbsUp = document.querySelector('img[src*="thumbs_up"]');
+			const thumbsDown = document.querySelector('img[src*="thumbs_down"]');
+			
+			if (thumbsUp) {
+			  thumbsUp.style.display = "flex";
+			  thumbsUp.setAttribute('aria-hidden', 'false');
+			  thumbsUp.style.bottom = "10px";
+			}
+			
+			if (thumbsDown) {
+			  thumbsDown.style.display = "flex";
+			  thumbsDown.setAttribute('aria-hidden', 'false');
+			  thumbsDown.style.bottom = "10px";
+			}
               document.querySelectorAll('[style*="display: flex"], [style*="display: table"], [style*="opacity: 1"], [aria-hidden="false"]').forEach(el => {
 
                     if (el.getAttribute('aria-hidden') === 'false' && el.style.opacity === '1' && el.style.paddingBottom === '10px') {
@@ -135,12 +157,7 @@
               });
               return closestEl || currentEl;
           }
-       else if (direction === 'ArrowRight' && currentEl.innerText.toLowerCase().trim() !== 'yes' && !document.querySelector('img[src*="//media.downdogapp.com/asset/play_icon_9b1d81d5"]')) {
-              // Special case for ArrowRight: Check for a "SELECT" button
-              const selectButton = [...document.querySelectorAll('button')]
-                .find(el => el.offsetParent !== null && ['select','start'].includes(el.innerText.toLowerCase().trim()));
-              return selectButton || currentEl;
-          } else if (direction === 'ArrowDown' && (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down'))){       
+else if (direction === 'ArrowDown' && (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down'))){       
               document.querySelector('img[src*="thumbs_up"]').style.bottom = "193px";
               document.querySelector('img[src*="thumbs_down"]').style.bottom = "193px";
               document.querySelectorAll('[style*="display: none"], [style*="opacity: 0"], [aria-hidden="true"]').forEach(el => {
