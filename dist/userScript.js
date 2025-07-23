@@ -200,7 +200,7 @@
   }
 
   // Keyboard event handler with extended key support
-  document.addEventListener('keydown', function (e) {
+  window.addEventListener('keydown', function (e) {
     const key = e.key;
     const elements = updateNavigableElements();
     if (elements.length === 0) return;
@@ -210,14 +210,6 @@
     switch (key) {
       case 'ArrowDown':
       case 'ArrowRight':
-        e.stopImmediatePropagation();
-        e.stopPropagation()
-        e.preventDefault()
-        //document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
-        //document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
-        //document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
-        //document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
-        //document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px"
         if (config.useSpatialNavigation) {
           const nextEl = getClosestElement(currentEl, key);
           focusElement(nextEl);
@@ -226,15 +218,11 @@
           focusElement(nextIndex);
         }
         e.stopImmediatePropagation();
-        e.stopPropagation()
         e.preventDefault();
         break;
 
       case 'ArrowUp':
       case 'ArrowLeft':
-        e.stopImmediatePropagation();
-        e.stopPropagation()
-        e.preventDefault()
         if (config.useSpatialNavigation) {
           const nextEl = getClosestElement(currentEl, key);
           focusElement(nextEl);
@@ -243,44 +231,36 @@
           focusElement(nextIndex);
         }
         e.stopImmediatePropagation();
-        e.stopPropagation()
         e.preventDefault();
         break;
 
       case 'Enter':
-        //currentEl.click(); // Activate focused element
         const overlay = document.querySelector('div[aria-label="Tap to begin"]');
         if (overlay) {
           overlay.click(); // Dismiss the overlay
-          //document.querySelector('img[src*="thumbs_up"]').style.display = "flex";
-                //document.querySelector('img[src*="thumbs_down"]').style.display = "flex";
-                //document.querySelector('img[src*="thumbs_down"]').setAttribute('aria-hidden', 'false');
-                //document.querySelector('img[src*="thumbs_up"]').setAttribute('aria-hidden', 'false');
-                //document.querySelector('img[src*="thumbs_up"]').style.bottom = "10px";
-              //document.querySelector('img[src*="thumbs_down"]').style.bottom = "10px";
         }
+        e.stopImmediatePropagation();
         e.preventDefault();
         break;
       default:
-        if (e.keyCode === 10009) { // <- This is the actual Return button on Tizen remotes
+        if (e.keyCode === 10009) { // Return button on Tizen remotes
           if (window.location.href !== 'https://www.downdogapp.com/web') {
             window.location.href = 'https://www.downdogapp.com/web';
+            e.stopImmediatePropagation();
             e.preventDefault();
-            }
+          }
         }
-  break;
+        break;
     }
-  });
+  }, true); // Use capture phase
 
   // Handle dynamic content changes
   const observer = new MutationObserver(() => {
-    
     updateNavigableElements();
     if (!document.activeElement || !navigableElementsCache.includes(document.activeElement)) {
-      if ([...document.querySelectorAll('div')].find(el => getComputedStyle(el).backgroundColor === 'rgba(255, 255, 255, 0.9)')){
+      if ([...document.querySelectorAll('div')].find(el => getComputedStyle(el).backgroundColor === 'rgba(255, 255, 255, 0.9)')) {
         focusElement([...document.querySelectorAll('div')].find(el => getComputedStyle(el).backgroundColor === 'rgba(255, 255, 255, 0.9)'));
-      }
-      else{
+      } else {
         focusElement(0); // Reset focus if lost
       }
     }
