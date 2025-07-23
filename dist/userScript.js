@@ -238,9 +238,9 @@
         const overlay = document.querySelector('div[aria-label="Tap to begin"]');
         if (overlay) {
           overlay.click(); // Dismiss the overlay
+          e.stopImmediatePropagation();
+          e.preventDefault();
         }
-        e.stopImmediatePropagation();
-        e.preventDefault();
         break;
       default:
         if (e.keyCode === 10009) { // Return button on Tizen remotes
