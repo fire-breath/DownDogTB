@@ -1,5 +1,9 @@
 Trying to create a module for tizenbrew with downdog yoga website.
 
+When using this module, try to load it via:
+github modules ->
+ fire-breath/DownDogTB@main215
+
 # Usable
 - Not perfect UI navigation, but for my skills with javascript it is good than enough :D
 - Only use the main screen with login/sign up to login only with email and password
