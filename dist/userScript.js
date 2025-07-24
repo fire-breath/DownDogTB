@@ -31,9 +31,34 @@
   
   // Helper: get all navigable elements with dynamic updates
   function updateNavigableElements() {
-    if ([...document.querySelectorAll('span')].find(el => el.textContent.trim() === 'Resume Practice')?.textContent.trim() === 'Resume Practice') {
+	  		const thumbsUp = document.querySelector('img[src*="thumbs_up"]');
+		const thumbsDown = document.querySelector('img[src*="thumbs_down"]');
+		
+		if (thumbsUp) {
+		  thumbsUp.style.display = "flex";
+		  thumbsUp.setAttribute('aria-hidden', 'false');
+		}
+		
+		if (thumbsDown) {
+		  thumbsDown.style.display = "flex";
+		  thumbsDown.setAttribute('aria-hidden', 'false');
+		}
+	                document.querySelectorAll('[style*="display: flex"], [style*="display: table"], [style*="opacity: 1"], [aria-hidden="false"], [style*="margin-top: 15px"]').forEach(el => {
+
+				 if (el.style.opacity === '1' && el.style.display === 'flex' && el.style.width === '160px') {
+                    	el.style.display = 'none';
+                    	el.style.opacity = '0';
+ }
+	    if (el.innerText === 'or' && 
+        el.style.marginTop === '15px' && 
+        el.style.marginBottom === '15px') {
+        el.innerText = '';
+    }
+              });
+	  
+    if (([...document.querySelectorAll('span')].find(el => el.textContent.trim() === 'Resume Practice')?.textContent.trim() === 'Resume Practice')||([...document.querySelectorAll('button')].find(el => el.textContent.trim() === 'OK')?.textContent.trim() === 'OK')||([...document.querySelectorAll('button')].find(el => el.textContent.trim() === 'RESET')?.textContent.trim() === 'RESET')) {
       navigableElementsCache = Array.from(document.querySelectorAll(config.navigableSelector))
-        .filter(el => el.offsetParent !== null && !el.matches(config.excludeSelector) && (el.innerText.toLowerCase() == 'no'|| el.innerText.toLowerCase() == 'yes' ));
+        .filter(el => el.offsetParent !== null && !el.matches(config.excludeSelector) && ((el.innerText.toLowerCase() == 'no'|| el.innerText.toLowerCase() == 'yes' )||((el.innerText.toLowerCase() == 'ok') || (el.innerText.toLowerCase() == 'cancel'))||(el.innerText.toLowerCase() == 'try again' ||el.innerText.toLowerCase() == 'reset' )));
     }
     else {
       navigableElementsCache = Array.from(document.querySelectorAll(config.navigableSelector))
@@ -95,7 +120,18 @@
           break;
       }
     });
-               
+                                  
+document.querySelectorAll('[style*="display: flex"], [style*="opacity: 1"], [style*="margin-top: 15px"]').forEach(el => {
+ if (el.style.opacity === '1' && el.style.display === 'flex' && el.style.width === '160px') {
+                    	el.style.display = 'none';
+                    	el.style.opacity = '0';
+ }
+	    if (el.innerText === 'or' && 
+        el.style.marginTop === '15px' && 
+        el.style.marginBottom === '15px') {
+        el.innerText = '';
+    }
+});
        if (closestEl) {
 		const thumbsUp = document.querySelector('img[src*="thumbs_up"]');
 		const thumbsDown = document.querySelector('img[src*="thumbs_down"]');
@@ -116,23 +152,12 @@
               const selectButton = [...document.querySelectorAll('button')]
                 .find(el => el.offsetParent !== null && ['select','start'].includes(el.innerText.toLowerCase().trim()));
               return selectButton || currentEl;
-          } else if (direction !== 'ArrowDown' && document.querySelectorAll('img.tv-focus[src*="//media.downdogapp.com/asset/skip_icon_3ed75db3"]')){
-			const thumbsUp = document.querySelector('img[src*="thumbs_up"]');
-			const thumbsDown = document.querySelector('img[src*="thumbs_down"]');
-			
-			if (thumbsUp) {
-			  thumbsUp.style.display = "flex";
-			  thumbsUp.setAttribute('aria-hidden', 'false');
-			  thumbsUp.style.bottom = "10px";
-			}
-			
-			if (thumbsDown) {
-			  thumbsDown.style.display = "flex";
-			  thumbsDown.setAttribute('aria-hidden', 'false');
-			  thumbsDown.style.bottom = "10px";
-			}
-              document.querySelectorAll('[style*="display: flex"], [style*="display: table"], [style*="opacity: 1"], [aria-hidden="false"]').forEach(el => {
-
+          }
+		      if (currentEl.src.toLowerCase().includes('skip_icon')){
+document.querySelectorAll('[style*="opacity: 1"], [aria-hidden="false"]').forEach(el => {
+			      		
+			document.querySelector('img[src*="thumbs_down"]').style.bottom === "10px"
+			document.querySelector('img[src*="thumbs_up"]').style.bottom === "10px"
                     if (el.getAttribute('aria-hidden') === 'false' && el.style.opacity === '1' && el.style.paddingBottom === '10px') {
                     	el.style.display = 'none';
                     	el.style.opacity = '0';
@@ -153,11 +178,10 @@
                     	el.style.opacity = '0';
                     	el.setAttribute('aria-hidden', 'true');
                     }
-                
-              });
-              return closestEl || currentEl;
+		});
+            
           }
-else if (direction === 'ArrowDown' && (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down'))){       
+if (direction === 'ArrowDown' && (currentEl.src.toLowerCase().includes('thumbs_up')||currentEl.src.toLowerCase().includes('thumbs_down'))){       
               document.querySelector('img[src*="thumbs_up"]').style.bottom = "193px";
               document.querySelector('img[src*="thumbs_down"]').style.bottom = "193px";
               document.querySelectorAll('[style*="display: none"], [style*="opacity: 0"], [aria-hidden="true"]').forEach(el => {
@@ -183,12 +207,9 @@ else if (el.getAttribute('aria-hidden') === 'true' && el.style.opacity === '0' &
 	el.setAttribute('aria-hidden', 'false');
 }
 
+              });}
 
 
-                
-              });
-            
-          }
       
 
     return closestEl || currentEl;
@@ -263,6 +284,7 @@ else if (el.getAttribute('aria-hidden') === 'true' && el.style.opacity === '0' &
 
       case 'Enter':
         const overlay = document.querySelector('div[aria-label="Tap to begin"]');
+        updateNavigableElements();
         if (overlay) {
           overlay.click(); // Dismiss the overlay
           e.stopImmediatePropagation();
@@ -280,6 +302,10 @@ else if (el.getAttribute('aria-hidden') === 'true' && el.style.opacity === '0' &
         break;
     }
   }, true); // Use capture phase
+
+	setInterval(() => {
+    updateNavigableElements();
+}, 100);
 
   // Handle dynamic content changes
   const observer = new MutationObserver(() => {
