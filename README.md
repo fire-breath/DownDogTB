@@ -2,7 +2,7 @@ Trying to create a module for tizenbrew with downdog yoga website.
 
 When using this module, try to load it via:
 github modules ->
- fire-breath/DownDogTB@main215
+ fire-breath/DownDogTB@main220
 
 # Usable
 - Not perfect UI navigation, but for my skills with javascript it is good than enough :D
